@@ -1,0 +1,16 @@
+output_folder: output_other_variant_callers_pandora_paper_tag1
+
+illumina_tools:
+  - snippy
+
+coverages:
+  - 100
+
+subsampling: random
+
+samples: metadata/samples_pandora_paper_tag1.csv
+
+references: metadata/references_pandora_paper_tag1.csv
+
+containers:
+  snippy: docker://quay.io/biocontainers/snippy:4.6.0--0
