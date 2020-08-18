@@ -40,6 +40,9 @@ subsampling = config["subsampling"]
 samples_file = config["samples"]
 references_file = config["references"]
 snippy_container = config["containers"]["snippy"]
+samtools_container = config["containers"]["samtools"]
+bwa_container = config["containers"]["bwa"]
+bcftools_container = config["containers"]["bcftools"]
 
 
 samples = pd.read_csv(samples_file)
@@ -53,9 +56,9 @@ references = update_to_absolute_path(references, ["compressed_file", "uncompress
 # ======================================================
 rule all:
     input:
-        expand(f"{output_folder}/{{tool}}/illumina/{{coverage}}x/{subsampling}/{{sample}}/snippy_{{sample}}_AND_{{reference}}.vcf",
+        expand(f"{output_folder}/{{tool}}/illumina/{{coverage}}x/{subsampling}/{{sample}}/{{tool}}_{{sample}}_AND_{{reference}}.vcf",
                tool=illumina_tools, coverage=coverages, sample=samples["sample_id"], reference=references["reference_id"]),
-        expand(f"{output_folder}/{{tool}}/illumina/{{coverage}}x/{subsampling}/{{sample}}/snippy_{{sample}}_AND_{{reference}}.ref.fa",
+        expand(f"{output_folder}/{{tool}}/illumina/{{coverage}}x/{subsampling}/{{sample}}/{{tool}}_{{sample}}_AND_{{reference}}.ref.fa",
                tool=illumina_tools, coverage=coverages, sample=samples["sample_id"], reference=references["reference_id"]),
 
 
