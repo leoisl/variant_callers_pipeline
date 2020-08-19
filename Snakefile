@@ -17,10 +17,10 @@ def get_illumina_reads(samples, sample_name, first_or_second, subsampling, cover
     sample_path = samples[samples.sample_id == sample_name]["sample_path"].tolist()[0]
     return f"{sample_path}/{sample_name}.{coverage}x.{subsampling}.illumina.{first_or_second}.fastq"
 
-def get_nanopore_reads(samples, sample_name):
+def get_nanopore_reads(samples, sample_name, subsampling, coverage):
     assert sample_name in samples.sample_id.to_list()
     sample_path = samples[samples.sample_id == sample_name]["sample_path"].tolist()[0]
-    return f"{sample_path}/{sample_name}.nanopore.fastq.gz"
+    return f"{sample_path}/{sample_name}.{coverage}x.{subsampling}.nanopore.fastq"
 
 def get_uncompressed_reference(references, reference_id):
     assert reference_id in references.reference_id.to_list()
@@ -35,12 +35,14 @@ def get_uncompressed_reference(references, reference_id):
 configfile: "config.yaml"
 output_folder = config['output_folder']
 illumina_tools = config["illumina_tools"]
+nanopore_tools = config["nanopore_tools"]
 coverages = config["coverages"]
 subsampling = config["subsampling"]
 samples_file = config["samples"]
 references_file = config["references"]
 snippy_container = config["containers"]["snippy"]
 samtools_container = config["containers"]["samtools"]
+medaka_container = config["containers"]["medaka"]
 
 
 samples = pd.read_csv(samples_file)
@@ -52,13 +54,32 @@ references = update_to_absolute_path(references, ["compressed_file", "uncompress
 # ======================================================
 # Main rule
 # ======================================================
+def get_final_files():
+    final_files = []
+    if illumina_tools is not None:
+        final_files.extend(
+            expand(f"{output_folder}/{{tool}}/illumina/{{coverage}}x/{subsampling}/{{sample}}/{{tool}}_{{sample}}_AND_{{reference}}.vcf",
+            tool=illumina_tools, coverage=coverages, sample=samples["sample_id"], reference=references["reference_id"])
+        )
+        final_files.extend(
+            expand(f"{output_folder}/{{tool}}/illumina/{{coverage}}x/{subsampling}/{{sample}}/{{tool}}_{{sample}}_AND_{{reference}}.ref.fa",
+            tool=illumina_tools, coverage=coverages, sample=samples["sample_id"], reference=references["reference_id"])
+        )
+    if nanopore_tools is not None:
+        final_files.extend(
+            expand(f"{output_folder}/{{tool}}/nanopore/{{coverage}}x/{subsampling}/{{sample}}/{{tool}}_{{sample}}_AND_{{reference}}.vcf",
+            tool=nanopore_tools, coverage=coverages, sample=samples["sample_id"], reference=references["reference_id"])
+        )
+        final_files.extend(
+            expand(f"{output_folder}/{{tool}}/nanopore/{{coverage}}x/{subsampling}/{{sample}}/{{tool}}_{{sample}}_AND_{{reference}}.ref.fa",
+            tool=nanopore_tools, coverage=coverages, sample=samples["sample_id"], reference=references["reference_id"])
+        )
+    return final_files
+
 rule all:
-    input:
-        expand(f"{output_folder}/{{tool}}/illumina/{{coverage}}x/{subsampling}/{{sample}}/{{tool}}_{{sample}}_AND_{{reference}}.vcf",
-               tool=illumina_tools, coverage=coverages, sample=samples["sample_id"], reference=references["reference_id"]),
-        expand(f"{output_folder}/{{tool}}/illumina/{{coverage}}x/{subsampling}/{{sample}}/{{tool}}_{{sample}}_AND_{{reference}}.ref.fa",
-               tool=illumina_tools, coverage=coverages, sample=samples["sample_id"], reference=references["reference_id"]),
+    input: get_final_files()
 
 
 include: "rules/snippy.smk"
 include: "rules/samtools.smk"
+include: "rules/medaka.smk"

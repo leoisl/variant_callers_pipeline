@@ -6,3 +6,5 @@ venv/
 /output_other_variant_callers_small/
 /logs/
 /sample_data.zip
+
+.keras/
