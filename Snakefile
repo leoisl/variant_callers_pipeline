@@ -41,8 +41,6 @@ samples_file = config["samples"]
 references_file = config["references"]
 snippy_container = config["containers"]["snippy"]
 samtools_container = config["containers"]["samtools"]
-bwa_container = config["containers"]["bwa"]
-bcftools_container = config["containers"]["bcftools"]
 
 
 samples = pd.read_csv(samples_file)
@@ -63,3 +61,4 @@ rule all:
 
 
 include: "rules/snippy.smk"
+include: "rules/samtools.smk"

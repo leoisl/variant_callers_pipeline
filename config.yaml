@@ -15,6 +15,4 @@ references: metadata/references_small.csv
 
 containers:
   snippy: docker://quay.io/biocontainers/snippy:4.6.0--0
-  samtools: docker://quay.io/biocontainers/samtools:1.10--h9402c20_2
-  bwa: docker://quay.io/biocontainers/bwa:v0.7.17_cv1
-  bcftools: docker://quay.io/biocontainers/bcftools:1.10.2--h4f4756c_2
+  samtools: docker://leandroishilima/variant_callers_pipeline_samtools:pandora_paper_tag1
