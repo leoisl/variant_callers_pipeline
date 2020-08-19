@@ -1,12 +1,12 @@
-rule link_ref:
+rule copy_ref:
     input:
         original_ref = lambda wildcards: get_uncompressed_reference(references, wildcards.reference),
     output:
         linked_ref = output_folder+"/samtools/illumina/{coverage}x/{subsampling}/{sample}/samtools_{sample}_AND_{reference}.ref.fa",
     threads: 1
     shell:
-        "ln -s {input.original_ref} {output.linked_ref}"
-localrules: link_ref
+        "cp {input.original_ref} {output.linked_ref}"
+localrules: copy_ref
 
 rule bwa_index:
     input:
@@ -40,8 +40,8 @@ rule bwa_mem_map_reads_to_ref:
     input:
         illumina_reads_1 = lambda wildcards: get_illumina_reads(samples, wildcards.sample, 1, wildcards.subsampling, wildcards.coverage),
         illumina_reads_2 = lambda wildcards: get_illumina_reads(samples, wildcards.sample, 2, wildcards.subsampling, wildcards.coverage),
-        ref = rules.link_ref.output.linked_ref,
-        ref_index = rules.link_ref.output.linked_ref+".amb",
+        ref = rules.copy_ref.output.linked_ref,
+        ref_index = rules.copy_ref.output.linked_ref+".amb",
     output:
         bam = output_folder+"/samtools/illumina/{coverage}x/{subsampling}/{sample}/samtools_{sample}_AND_{reference}.bam",
     threads: 1
@@ -56,8 +56,8 @@ rule bwa_mem_map_reads_to_ref:
 
 rule samtools_mpileup_bcftools_call:
     input:
-        ref = rules.link_ref.output.linked_ref,
-        ref_index = rules.link_ref.output.linked_ref+".fai",
+        ref = rules.copy_ref.output.linked_ref,
+        ref_index = rules.copy_ref.output.linked_ref+".fai",
         bam = rules.bwa_mem_map_reads_to_ref.output.bam,
     output:
         vcf = output_folder+"/samtools/illumina/{coverage}x/{subsampling}/{sample}/samtools_{sample}_AND_{reference}.vcf",
