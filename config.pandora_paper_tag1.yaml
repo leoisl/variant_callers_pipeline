@@ -6,6 +6,7 @@ illumina_tools:
 
 nanopore_tools:
   - medaka
+  - nanopolish
 
 coverages:
   - 100
@@ -16,7 +17,10 @@ samples: metadata/samples_pandora_paper_tag1.csv
 
 references: metadata/references_pandora_paper_tag1.csv
 
+fast5s: metadata/fast5s_small.csv
+
 containers:
   snippy: docker://quay.io/biocontainers/snippy:4.6.0--0
   samtools: docker://leandroishilima/variant_callers_pipeline_samtools:pandora_paper_tag1
   medaka: docker://quay.io/biocontainers/medaka:1.0.3--py36hcc5cce8_0
+  nanopolish: docker://quay.io/biocontainers/nanopolish:0.13.2--h76e78f2_1
