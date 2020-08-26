@@ -6,7 +6,7 @@ illumina_tools:
 
 nanopore_tools:
   - medaka
-  # - nanopolish  # TODO: need sample data for nanopolish
+  - nanopolish
 
 coverages:
   - 10
