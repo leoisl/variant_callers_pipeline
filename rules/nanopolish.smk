@@ -19,7 +19,7 @@ rule nanopolish_index:
     shell:
         """
         ln -s {input.nanopore_reads} {output.linked_reads}
-        nanopolish index -d {input.fast5_dir} -s {input.sequencing_summary} {output.linked_reads}
+        nanopolish index -d {input.fast5_dir} -s {input.sequencing_summary} {output.linked_reads} 2>{log}
         """
 
 
@@ -40,9 +40,9 @@ rule run_nanopolish:
         nanopolish_container
     shell:
         """
-        minimap2 -ax map-ont -t {threads} {input.ref} {input.nanopore_reads} | \
-            samtools sort -o reads.sorted.bam -T reads.tmp
-        samtools index reads.sorted.bam
+        minimap2 -ax map-ont -t {threads} {input.ref} {input.nanopore_reads} 2> {log} | \
+            samtools sort -o reads.sorted.bam -T reads.tmp 2>{log}
+        samtools index reads.sorted.bam 2>{log}
         
         nanopolish variants \
           -t {threads} \
@@ -51,7 +51,8 @@ rule run_nanopolish:
           --genome {input.ref} \
           -o {output.vcf} \
           -q dam,dcm \
-          --ploidy 1
+          --ploidy 1 \
+           2>{log}
       
         cp {input.ref} {output.ref}
         """
