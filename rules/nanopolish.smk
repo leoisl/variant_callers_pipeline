@@ -44,7 +44,6 @@ rule run_nanopolish:
             samtools sort -o reads.sorted.bam -T reads.tmp
         samtools index reads.sorted.bam
         
-        # without using parallel
         nanopolish variants \
           -t {threads} \
           --reads {input.nanopore_reads} \
@@ -53,23 +52,6 @@ rule run_nanopolish:
           -o {output.vcf} \
           -q dam,dcm \
           --ploidy 1
-
-
-        # using parallel
-        # mkdir -p nanopolish_out/vcf        
-        # nanopolish_makerange.py {input.ref} | \
-        #     parallel --results nanopolish_out -P {threads} \
-        #     nanopolish variants \
-        #       -t 1 \
-        #       -w {{1}} \
-        #       --reads {input.nanopore_reads} \
-        #       --bam reads.sorted.bam \
-        #       --genome {input.ref} \
-        #       -o nanopolish_out/vcf/nanopolish.{{1}}.vcf \
-        #       -q dam,dcm \
-        #       --ploidy 1
-        # cat nanopolish_out/vcf/nanopolish.*.vcf > {output.vcf}
-        
-        
+      
         cp {input.ref} {output.ref}
         """
