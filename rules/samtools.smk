@@ -38,8 +38,8 @@ rule faidx:
 
 rule bwa_mem_map_reads_to_ref:
     input:
-        illumina_reads_1 = lambda wildcards: get_illumina_reads(samples, wildcards.sample, 1, wildcards.subsampling, wildcards.coverage),
-        illumina_reads_2 = lambda wildcards: get_illumina_reads(samples, wildcards.sample, 2, wildcards.subsampling, wildcards.coverage),
+        illumina_reads_1 = lambda wildcards: get_illumina_reads(subsampled_reads, wildcards.sample, 1, wildcards.subsampling, wildcards.coverage),
+        illumina_reads_2 = lambda wildcards: get_illumina_reads(subsampled_reads, wildcards.sample, 2, wildcards.subsampling, wildcards.coverage),
         ref = rules.copy_ref.output.linked_ref,
         ref_index = rules.copy_ref.output.linked_ref+".amb",
     output:

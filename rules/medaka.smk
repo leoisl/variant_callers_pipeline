@@ -1,6 +1,6 @@
 rule run_medaka:
     input:
-        nanopore_reads = lambda wildcards: get_nanopore_reads(samples, wildcards.sample, wildcards.subsampling, wildcards.coverage),
+        nanopore_reads = lambda wildcards: get_nanopore_reads(subsampled_reads, wildcards.sample, wildcards.subsampling, wildcards.coverage),
         ref = lambda wildcards: get_uncompressed_reference(references, wildcards.reference),
     output:
         vcf = output_folder+"/medaka/nanopore/{coverage}x/{subsampling}/{sample}/medaka_{sample}_AND_{reference}.vcf",

@@ -1,7 +1,7 @@
 rule run_pe_snippy:
     input:
-        illumina_reads_1 = lambda wildcards: get_illumina_reads(samples, wildcards.sample, 1, wildcards.subsampling, wildcards.coverage),
-        illumina_reads_2 = lambda wildcards: get_illumina_reads(samples, wildcards.sample, 2, wildcards.subsampling, wildcards.coverage),
+        illumina_reads_1 = lambda wildcards: get_illumina_reads(subsampled_reads, wildcards.sample, 1, wildcards.subsampling, wildcards.coverage),
+        illumina_reads_2 = lambda wildcards: get_illumina_reads(subsampled_reads, wildcards.sample, 2, wildcards.subsampling, wildcards.coverage),
         ref = lambda wildcards: get_uncompressed_reference(references, wildcards.reference),
     output:
         vcf = output_folder+"/snippy/illumina/{coverage}x/{subsampling}/{sample}/snippy_{sample}_AND_{reference}.vcf",

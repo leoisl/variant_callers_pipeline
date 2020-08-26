@@ -1,6 +1,6 @@
 rule nanopolish_index:
     input:
-        nanopore_reads     = lambda wildcards: get_nanopore_reads(samples, wildcards.sample, wildcards.subsampling, wildcards.coverage),
+        nanopore_reads     = lambda wildcards: get_nanopore_reads(subsampled_reads, wildcards.sample, wildcards.subsampling, wildcards.coverage),
         # Obs: fine to give a fastq and a superset of fast5s: https://github.com/jts/nanopolish/issues/443
         fast5_dir          = lambda wildcards: get_fast5_dir(fast5s_df, wildcards.sample),
         sequencing_summary = lambda wildcards: get_sequencing_summary(fast5s_df, wildcards.sample),

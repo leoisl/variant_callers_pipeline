@@ -11,15 +11,15 @@ def update_to_absolute_path(df, columns):
         df[column] = update_to_absolute_path_core(df[column])
     return df
 
-def get_illumina_reads(samples, sample_name, first_or_second, subsampling, coverage):
+def get_illumina_reads(subsampled_reads, sample_name, first_or_second, subsampling, coverage):
     assert first_or_second in [1, 2]
-    assert sample_name in samples.sample_id.to_list()
-    sample_path = samples[samples.sample_id == sample_name]["sample_path"].tolist()[0]
+    assert sample_name in subsampled_reads.sample_id.to_list()
+    sample_path = subsampled_reads[subsampled_reads.sample_id == sample_name]["sample_path"].tolist()[0]
     return f"{sample_path}/{sample_name}.{coverage}x.{subsampling}.illumina.{first_or_second}.fastq"
 
-def get_nanopore_reads(samples, sample_name, subsampling, coverage):
-    assert sample_name in samples.sample_id.to_list()
-    sample_path = samples[samples.sample_id == sample_name]["sample_path"].tolist()[0]
+def get_nanopore_reads(subsampled_reads, sample_name, subsampling, coverage):
+    assert sample_name in subsampled_reads.sample_id.to_list()
+    sample_path = subsampled_reads[subsampled_reads.sample_id == sample_name]["sample_path"].tolist()[0]
     return f"{sample_path}/{sample_name}.{coverage}x.{subsampling}.nanopore.fastq"
 
 def get_uncompressed_reference(references, reference_id):
@@ -48,7 +48,7 @@ illumina_tools = config["illumina_tools"]
 nanopore_tools = config["nanopore_tools"]
 coverages = config["coverages"]
 subsampling = config["subsampling"]
-samples_file = config["samples"]
+subsampled_reads_dir = config["subsampled_reads_dir"]
 references_file = config["references"]
 fast5s_file = config["fast5s"]
 snippy_container = config["containers"]["snippy"]
@@ -57,8 +57,8 @@ medaka_container = config["containers"]["medaka"]
 nanopolish_container = config["containers"]["nanopolish"]
 
 
-samples = pd.read_csv(samples_file)
-samples = update_to_absolute_path(samples, ["sample_path"])
+subsampled_reads = pd.read_csv(subsampled_reads_dir)
+subsampled_reads = update_to_absolute_path(subsampled_reads, ["sample_path"])
 references = pd.read_csv(references_file)
 references = update_to_absolute_path(references, ["compressed_file", "uncompressed_file"])
 fast5s_df = pd.read_csv(fast5s_file)
@@ -73,20 +73,20 @@ def get_final_files():
     if illumina_tools is not None:
         final_files.extend(
             expand(f"{output_folder}/{{tool}}/illumina/{{coverage}}x/{subsampling}/{{sample}}/{{tool}}_{{sample}}_AND_{{reference}}.vcf",
-            tool=illumina_tools, coverage=coverages, sample=samples["sample_id"], reference=references["reference_id"])
+            tool=illumina_tools, coverage=coverages, sample=subsampled_reads["sample_id"], reference=references["reference_id"])
         )
         final_files.extend(
             expand(f"{output_folder}/{{tool}}/illumina/{{coverage}}x/{subsampling}/{{sample}}/{{tool}}_{{sample}}_AND_{{reference}}.ref.fa",
-            tool=illumina_tools, coverage=coverages, sample=samples["sample_id"], reference=references["reference_id"])
+            tool=illumina_tools, coverage=coverages, sample=subsampled_reads["sample_id"], reference=references["reference_id"])
         )
     if nanopore_tools is not None:
         final_files.extend(
             expand(f"{output_folder}/{{tool}}/nanopore/{{coverage}}x/{subsampling}/{{sample}}/{{tool}}_{{sample}}_AND_{{reference}}.vcf",
-            tool=nanopore_tools, coverage=coverages, sample=samples["sample_id"], reference=references["reference_id"])
+            tool=nanopore_tools, coverage=coverages, sample=subsampled_reads["sample_id"], reference=references["reference_id"])
         )
         final_files.extend(
             expand(f"{output_folder}/{{tool}}/nanopore/{{coverage}}x/{subsampling}/{{sample}}/{{tool}}_{{sample}}_AND_{{reference}}.ref.fa",
-            tool=nanopore_tools, coverage=coverages, sample=samples["sample_id"], reference=references["reference_id"])
+            tool=nanopore_tools, coverage=coverages, sample=subsampled_reads["sample_id"], reference=references["reference_id"])
         )
     return final_files
 
