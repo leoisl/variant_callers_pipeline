@@ -17,7 +17,7 @@ samples: metadata/samples_small.csv
 
 references: metadata/references_small.csv
 
-fast5s: metadata/fast5s_pandora_paper_tag1.csv
+fast5s: metadata/fast5s_small.csv
 
 containers:
   snippy: docker://quay.io/biocontainers/snippy:4.6.0--0
