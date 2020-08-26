@@ -14,13 +14,13 @@ def update_to_absolute_path(df, columns):
 def get_illumina_reads(subsampled_reads, sample_name, first_or_second, subsampling, coverage):
     assert first_or_second in [1, 2]
     assert sample_name in subsampled_reads.sample_id.to_list()
-    sample_path = subsampled_reads[subsampled_reads.sample_id == sample_name]["sample_path"].tolist()[0]
-    return f"{sample_path}/{sample_name}.{coverage}x.{subsampling}.illumina.{first_or_second}.fastq"
+    subsampled_reads_dir = subsampled_reads[subsampled_reads.sample_id == sample_name]["subsampled_reads_dir"].tolist()[0]
+    return f"{subsampled_reads_dir}/{sample_name}.{coverage}x.{subsampling}.illumina.{first_or_second}.fastq"
 
 def get_nanopore_reads(subsampled_reads, sample_name, subsampling, coverage):
     assert sample_name in subsampled_reads.sample_id.to_list()
-    sample_path = subsampled_reads[subsampled_reads.sample_id == sample_name]["sample_path"].tolist()[0]
-    return f"{sample_path}/{sample_name}.{coverage}x.{subsampling}.nanopore.fastq"
+    subsampled_reads_dir = subsampled_reads[subsampled_reads.sample_id == sample_name]["subsampled_reads_dir"].tolist()[0]
+    return f"{subsampled_reads_dir}/{sample_name}.{coverage}x.{subsampling}.nanopore.fastq"
 
 def get_uncompressed_reference(references, reference_id):
     assert reference_id in references.reference_id.to_list()
