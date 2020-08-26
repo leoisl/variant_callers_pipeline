@@ -58,7 +58,7 @@ nanopolish_container = config["containers"]["nanopolish"]
 
 
 subsampled_reads = pd.read_csv(subsampled_reads_dir)
-subsampled_reads = update_to_absolute_path(subsampled_reads, ["sample_path"])
+subsampled_reads = update_to_absolute_path(subsampled_reads, ["subsampled_reads_dir"])
 references = pd.read_csv(references_file)
 references = update_to_absolute_path(references, ["compressed_file", "uncompressed_file"])
 fast5s_df = pd.read_csv(fast5s_file)

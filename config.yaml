@@ -13,7 +13,7 @@ coverages:
 
 subsampling: random
 
-subsampled_reads_dir: metadata/samples_small.csv
+subsampled_reads_dir: metadata/subsampled_reads_small.csv
 
 references: metadata/references_small.csv
 
