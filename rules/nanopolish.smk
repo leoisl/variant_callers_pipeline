@@ -31,9 +31,10 @@ rule run_nanopolish:
     output:
         vcf = output_folder+"/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.vcf",
         ref = output_folder+"/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.ref.fa",
-        temp_dir = directory(output_folder+"/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.temp")
     shadow: "shallow"
     threads: 16
+    params:
+        nb_of_processes = 8
     log: "logs/run_nanopolish/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.log"
     resources:
         mem_mb = lambda wildcards, attempt: 40000 * attempt
@@ -47,9 +48,9 @@ rule run_nanopolish:
         
         mkdir -p nanopolish_out/vcf        
         nanopolish_makerange.py {input.ref} | \
-            parallel --results nanopolish_out -P 8 \
+            parallel --results nanopolish_out -P {params.nb_of_processes} \
             nanopolish variants \
-              -t 2 \
+              -t $(({threads} / {params.nb_of_processes})) \
               -w {{1}} \
               --reads {input.nanopore_reads} \
               --bam reads.sorted.bam \
@@ -59,13 +60,10 @@ rule run_nanopolish:
               --ploidy 1
         
         # concat vcfs
-        cat `ls -1 nanopolish_out/vcf/nanopolish.*.vcf | head -n 1` | grep "^#" > vcf_header
-        cat nanopolish_out/vcf/nanopolish.*.vcf | grep -v "^#" > vcf_content
-        cat vcf_header vcf_content > {output.vcf} 
+        cat `ls -1 nanopolish_out/vcf/nanopolish.*.vcf | head -n 1` | grep "^#" > nanopolish_out/vcf_header
+        cat nanopolish_out/vcf/nanopolish.*.vcf | grep -v "^#" > nanopolish_out/vcf_content
+        cat nanopolish_out/vcf_header nanopolish_out/vcf_content > {output.vcf} 
         
-        mkdir -p {output.temp_dir}
-        cp nanopolish_out/vcf/nanopolish.*.vcf {output.temp_dir}
-
         cp {input.ref} {output.ref}
         """
 
