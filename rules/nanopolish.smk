@@ -32,7 +32,7 @@ rule run_nanopolish:
         vcf = output_folder+"/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.vcf",
         ref = output_folder+"/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.ref.fa",
     shadow: "shallow"
-    threads: 32
+    threads: 16
     log: "logs/run_nanopolish/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.log"
     resources:
         mem_mb = lambda wildcards, attempt: 40000 * attempt
