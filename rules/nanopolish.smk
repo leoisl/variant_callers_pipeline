@@ -57,7 +57,8 @@ rule run_nanopolish:
               --genome {input.ref} \
               -o nanopolish_out/vcf/nanopolish.{{1}}.vcf \
               -q dam,dcm \
-              --ploidy 1
+              --ploidy 1 \
+              2>{log}
         
         # concat vcfs
         cat `ls -1 nanopolish_out/vcf/nanopolish.*.vcf | head -n 1` | grep "^#" > nanopolish_out/vcf_header
