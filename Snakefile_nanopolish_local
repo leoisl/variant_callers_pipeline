@@ -1,0 +1,2 @@
+import Snakefile
+localrules: nanopolish_index, run_nanopolish
