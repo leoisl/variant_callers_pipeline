@@ -59,7 +59,7 @@ rule run_nanopolish:
               --ploidy 1
         
         # concat vcfs
-        cat `ls -1 * | head -n 1` | grep "^#" > vcf_header
+        cat `ls -1 nanopolish_out/vcf/nanopolish.*.vcf | head -n 1` | grep "^#" > vcf_header
         cat nanopolish_out/vcf/nanopolish.*.vcf | grep -v "^#" > vcf_content
         cat vcf_header vcf_content > {output.vcf} 
         
