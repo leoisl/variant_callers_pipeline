@@ -58,9 +58,13 @@ rule run_nanopolish:
               -q dam,dcm \
               --ploidy 1
         
+        # concat vcfs
+        cat `ls -1 * | head -n 1` | grep "^#" > vcf_header
+        cat nanopolish_out/vcf/nanopolish.*.vcf | grep -v "^#" > vcf_content
+        cat vcf_header vcf_content > {output.vcf} 
+        
         mkdir -p {output.temp_dir}
         cp nanopolish_out/vcf/nanopolish.*.vcf {output.temp_dir}
-        cat nanopolish_out/vcf/nanopolish.*.vcf > {output.vcf}
 
         cp {input.ref} {output.ref}
         """
