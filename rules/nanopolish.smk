@@ -56,3 +56,9 @@ rule run_nanopolish:
       
         cp {input.ref} {output.ref}
         """
+
+if "run_nanopolish_locally" in config and config["run_nanopolish_locally"]==True:
+    print("Running nanopolish locally...")
+    localrules: nanopolish_index, run_nanopolish
+else:
+    print("Submitting nanopolish jobs...")

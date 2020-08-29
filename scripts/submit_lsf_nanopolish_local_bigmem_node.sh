@@ -17,7 +17,7 @@ bsub -R "select[mem>$MEMORY] rusage[mem=$MEMORY] span[hosts=1]" \
     -o "$LOG_DIR"/"$JOB_NAME".o \
     -e "$LOG_DIR"/"$JOB_NAME".e \
     -J "$JOB_NAME" \
-      snakemake --snakefile Snakefile_nanopolish_local \
+      snakemake --config run_nanopolish_locally=True \
                 --local-cores "$SNAKEMAKE_LOCAL_CORES" \
                 --profile "$PROFILE" \
                 --keep-going "$@"
