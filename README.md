@@ -36,6 +36,11 @@ The version used in the pandora paper has tag `pandora_paper_tag1`.
 
 3. `bash scripts/submit_lsf.sh --configfile config.pandora_paper_tag1.yaml`
 
+
+### Best way to run on EBI Yoda (LSF cluster + heavy big mem node):
+
+3.  `bash scripts/submit_lsf_nanopolish_local_bigmem_node.sh --configfile config.pandora_paper_tag1.yaml --singularity-prefix /nfs/leia/singularity/leandro/`
+
 # Troubleshooting
 
 If you get this error:
