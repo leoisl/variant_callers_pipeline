@@ -31,6 +31,7 @@ rule run_nanopolish:
     output:
         vcf = output_folder+"/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.vcf",
         ref = output_folder+"/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.ref.fa",
+        temp_dir = output_folder+"/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.temp"
     shadow: "shallow"
     threads: 16
     log: "logs/run_nanopolish/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.log"
@@ -56,6 +57,9 @@ rule run_nanopolish:
               -o nanopolish_out/vcf/nanopolish.{{1}}.vcf \
               -q dam,dcm \
               --ploidy 1
+        
+        mkdir -p {output.temp_dir}
+        cp nanopolish_out/vcf/nanopolish.*.vcf {output.temp_dir}
         cat nanopolish_out/vcf/nanopolish.*.vcf > {output.vcf}
 
         cp {input.ref} {output.ref}
