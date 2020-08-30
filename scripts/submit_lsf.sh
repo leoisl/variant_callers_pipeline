@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -eux
 
 MEMORY=4000
 PROFILE="lsf"
