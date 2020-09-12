@@ -9,7 +9,7 @@ rule run_medaka:
     threads: 4
     log: "logs/run_medaka/medaka/nanopore/{coverage}x/{subsampling}/{sample}/medaka_{sample}_AND_{reference}.log"
     resources:
-        mem_mb = lambda wildcards, attempt: 20000 * attempt
+        mem_mb = lambda wildcards, attempt: 8000 * attempt
     singularity:
         medaka_container
     shell:
