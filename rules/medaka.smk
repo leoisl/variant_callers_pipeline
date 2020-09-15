@@ -20,7 +20,11 @@ rule run_medaka:
             # medaka will bug on this input, create an empty VCF
             # Note: we still don't want to automate this because medaka can fail for other reasons that are not software bug,
             # but machine related or user error
-            touch {output.vcf}
+            cat > {output.vcf} <<- EndOfMessage
+##fileformat=VCFv4.1
+##medaka_version=1.0.3
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SAMPLE
+EndOfMessage
         else
             # run medaka normally
             # Following ARTIC pipeline from https://github.com/nanoporetech/medaka/issues/173#issuecomment-642566213 :
