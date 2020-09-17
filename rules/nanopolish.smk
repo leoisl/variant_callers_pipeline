@@ -24,7 +24,7 @@ rule run_nanopolish:
         nanopolish_container
     shell:
         """
-        ln -s {input.nanopore_reads} {output.linked_reads}
+        cp {input.nanopore_reads} {output.linked_reads}
         nanopolish index -d {input.fast5_dir} -s {input.sequencing_summary} {output.linked_reads} 2>{log}
 
         minimap2 -ax map-ont -t {threads} {input.ref} {output.linked_reads} 2> {log} | \
