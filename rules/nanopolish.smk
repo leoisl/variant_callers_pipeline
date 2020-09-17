@@ -37,7 +37,7 @@ rule run_nanopolish:
         nb_of_processes = 8
     log: "logs/run_nanopolish/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.log"
     resources:
-        mem_mb = lambda wildcards, attempt: 64000 * attempt
+        mem_mb = lambda wildcards, attempt: 60000 * attempt
     singularity:
         nanopolish_container
     shell:
