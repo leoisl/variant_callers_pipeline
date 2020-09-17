@@ -6,7 +6,7 @@ rule run_nanopolish:
         sequencing_summary = lambda wildcards: get_sequencing_summary(fast5s_df, wildcards.sample),
         ref = lambda wildcards: get_uncompressed_reference(references, wildcards.reference),
     output:
-        linked_reads = output_folder+"/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.reads.fastq",
+        copied_reads = output_folder+"/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.reads.fastq",
         index = output_folder+"/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.reads.fastq.index",
         fai = output_folder+"/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.reads.fastq.index.fai",
         gzi = output_folder+"/nanopolish/nanopore/{coverage}x/{subsampling}/{sample}/nanopolish_{sample}_AND_{reference}.reads.fastq.index.gzi",
@@ -24,10 +24,10 @@ rule run_nanopolish:
         nanopolish_container
     shell:
         """
-        cp {input.nanopore_reads} {output.linked_reads}
-        nanopolish index -d {input.fast5_dir} -s {input.sequencing_summary} {output.linked_reads} 2>{log}
+        cp {input.nanopore_reads} {output.copied_reads}
+        nanopolish index -d {input.fast5_dir} -s {input.sequencing_summary} {output.copied_reads} 2>{log}
 
-        minimap2 -ax map-ont -t {threads} {input.ref} {output.linked_reads} 2> {log} | \
+        minimap2 -ax map-ont -t {threads} {input.ref} {output.copied_reads} 2> {log} | \
             samtools sort -o reads.sorted.bam -T reads.tmp 2>{log}
         samtools index reads.sorted.bam 2>{log}
         
@@ -37,7 +37,7 @@ rule run_nanopolish:
             nanopolish variants \
               -t $(({threads} / {params.nb_of_processes})) \
               -w {{1}} \
-              --reads {output.linked_reads} \
+              --reads {output.copied_reads} \
               --bam reads.sorted.bam \
               --genome {input.ref} \
               -o nanopolish_out/vcf/nanopolish.{{1}}.vcf \
